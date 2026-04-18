@@ -126,59 +126,23 @@ footer a:hover{color:#f0ede6}
     <h1>Turn any idea into a<br><span>viral short video</span><br>in 30 seconds.</h1>
     <p class="hero-sub">VidGenLab uses the world's most powerful AI video engines to create stunning short videos for fun, entertainment, and marketing — no skills needed.</p>
 
-    <!-- SMART PROMPT BUILDER -->
-    <div class="demo-box" id="promptBuilder">
-
-      <!-- STEP 1: CATEGORY -->
-      <div class="pb-step" id="step1">
-        <div class="pb-label">Step 1 — What is your video for?</div>
-        <div class="category-grid">
-          <div class="cat-btn" onclick="selectCategory('fun','🎭','Fun & Entertainment','A hilarious and creative short clip for social media')">🎭<span>Fun & Entertainment</span></div>
-          <div class="cat-btn" onclick="selectCategory('marketing','📈','Marketing Video','A compelling promotional video for a product or service')">📈<span>Marketing Video</span></div>
-          <div class="cat-btn" onclick="selectCategory('creative','🎨','Creative Project','An artistic and visually stunning animation or short film')">🎨<span>Creative Project</span></div>
-          <div class="cat-btn" onclick="selectCategory('business','🏢','Business Presentation','A professional and engaging business presentation video')">🏢<span>Business Presentation</span></div>
-          <div class="cat-btn" onclick="selectCategory('ecommerce','🛍️','E-commerce Ad','A product showcase advertisement optimized for conversions')">🛍️<span>E-commerce Ad</span></div>
-          <div class="cat-btn" onclick="selectCategory('education','🎓','Education & Training','A clear and engaging educational explainer video')">🎓<span>Education & Training</span></div>
-        </div>
+    <!-- DEMO BOX -->
+    <div class="demo-box">
+      <div style="font-size:13px;color:#888;margin-bottom:10px;text-align:left">Try it — describe your video:</div>
+      <div class="demo-input-row">
+        <input class="demo-input" id="promptInput" placeholder="e.g. A cat surfing on a pizza through space..."/>
+        <button class="demo-btn" id="demoBtn" onclick="tryDemo()">Generate ✨</button>
       </div>
-
-      <!-- STEP 2: COMPANY + DETAILS -->
-      <div class="pb-step" id="step2" style="display:none">
-        <div class="pb-back" onclick="goBack(1)">← Change category</div>
-        <div class="pb-selected" id="selectedCat"></div>
-        <div class="pb-label" style="margin-top:12px">Step 2 — Company or brand name <span style="color:#666;font-weight:400">(optional)</span></div>
-        <input class="demo-input" id="companyInput" placeholder="e.g. Matrix Lab, Nike, My Bakery... or leave empty"/>
-        <div class="pb-label" style="margin-top:12px">Step 3 — Describe your video idea</div>
-        <textarea class="demo-input" id="promptInput" rows="3" placeholder="Describe what you want to see..." style="resize:vertical;line-height:1.6"></textarea>
-        <div class="pb-label" style="margin-top:12px">Visual style</div>
-        <div class="style-row" id="styleRow">
-          <div class="style-pill active" onclick="selectStyle(this)">Cinematic</div>
-          <div class="style-pill" onclick="selectStyle(this)">Cartoon</div>
-          <div class="style-pill" onclick="selectStyle(this)">Anime</div>
-          <div class="style-pill" onclick="selectStyle(this)">Realistic</div>
-          <div class="style-pill" onclick="selectStyle(this)">3D Animation</div>
-          <div class="style-pill" onclick="selectStyle(this)">Vintage Film</div>
-        </div>
-        <div class="pb-label" style="margin-top:12px">Duration</div>
-        <div class="style-row">
-          <div class="style-pill active" onclick="selectDuration(this)">15 sec</div>
-          <div class="style-pill" onclick="selectDuration(this)">30 sec</div>
-          <div class="style-pill" onclick="selectDuration(this)">60 sec</div>
-        </div>
-        <button class="demo-btn" id="demoBtn" onclick="buildAndGenerate()" style="width:100%;margin-top:14px">✨ Build & Preview prompt</button>
+      <div style="font-size:12px;color:#666;margin-bottom:8px;text-align:left">Style:</div>
+      <div class="style-row" id="styleRow">
+        <div class="style-pill active" onclick="selectStyle(this)">Cinematic</div>
+        <div class="style-pill" onclick="selectStyle(this)">Cartoon</div>
+        <div class="style-pill" onclick="selectStyle(this)">Anime</div>
+        <div class="style-pill" onclick="selectStyle(this)">Realistic</div>
+        <div class="style-pill" onclick="selectStyle(this)">3D Animation</div>
+        <div class="style-pill" onclick="selectStyle(this)">Vintage Film</div>
       </div>
-
-      <!-- STEP 3: RESULT -->
-      <div class="pb-step" id="step3" style="display:none">
-        <div class="pb-back" onclick="goBack(2)">← Edit details</div>
-        <div class="pb-label">Your optimized AI prompt:</div>
-        <div class="prompt-preview" id="promptPreview"></div>
-        <div style="font-size:12px;color:#666;margin:10px 0 14px;line-height:1.6">This prompt is automatically optimized for the best AI video result. You can edit it before generating.</div>
-        <textarea class="demo-input" id="finalPrompt" rows="4" style="resize:vertical;line-height:1.6;margin-bottom:12px"></textarea>
-        <button class="demo-btn" style="width:100%" onclick="tryGenerate()">🎬 Generate video — join waitlist to unlock</button>
-        <div class="demo-note" id="demoResult" style="margin-top:10px"></div>
-      </div>
-
+      <div class="demo-note" id="demoResult">Join the waitlist to generate real videos when we launch 🚀</div>
     </div>
 
     <div class="hero-btns">
@@ -439,87 +403,27 @@ async function joinWaitlist(){
   setTimeout(()=>{btn.disabled=false;btn.textContent='Join waitlist'},3000);
 }
 
-// PROMPT BUILDER STATE
-let state = { category:'', categoryLabel:'', categoryIcon:'', basePrompt:'', style:'Cinematic', duration:'15 sec' };
-
-const categoryPrompts = {
-  fun:        'A funny and entertaining short clip, full of humor and surprise moments, perfect for going viral on TikTok and Instagram Reels',
-  marketing:  'A compelling marketing video that showcases the brand with a clear message, strong call-to-action, and professional production quality',
-  creative:   'A visually stunning and artistic short film with creative cinematography, beautiful color grading, and an emotional narrative',
-  business:   'A professional and polished business presentation video that clearly communicates key points with modern motion graphics and a confident tone',
-  ecommerce:  'A high-converting product advertisement video that highlights the product\'s best features, benefits, and creates desire to buy',
-  education:  'A clear, engaging, and informative educational video that explains the topic step by step with helpful visuals and easy-to-understand narration'
-};
-
-const categoryExamples = {
-  fun:        'e.g. A dog tries to order coffee at Starbucks and gets very confused...',
-  marketing:  'e.g. Show our app saving people hours of work every day, ending with our logo...',
-  creative:   'e.g. A lone astronaut discovers a garden floating in space, full of color...',
-  business:   'e.g. Present our Q3 results with animated charts and a professional narrator...',
-  ecommerce:  'e.g. Show our sneaker rotating 360° with dynamic lighting and then someone wearing it...',
-  education:  'e.g. Explain how blockchain works using simple animated blocks and plain language...'
-};
-
-function selectCategory(key, icon, label, base){
-  state.category=key; state.categoryLabel=label; state.categoryIcon=icon; state.basePrompt=base;
-  document.getElementById('selectedCat').textContent=icon+' '+label;
-  document.getElementById('promptInput').placeholder=categoryExamples[key];
-  document.getElementById('step1').style.display='none';
-  document.getElementById('step2').style.display='block';
-  document.getElementById('companyInput').value='';
-  document.getElementById('promptInput').value='';
-}
-
-function goBack(toStep){
-  document.getElementById('step1').style.display= toStep===1?'block':'none';
-  document.getElementById('step2').style.display= toStep===2?'block':'none';
-  document.getElementById('step3').style.display='none';
-}
-
+// DEMO INTERACTION
 function selectStyle(el){
   document.querySelectorAll('.style-pill').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');
-  state.style=el.textContent;
 }
 
-function selectDuration(el){
-  el.parentElement.querySelectorAll('.style-pill').forEach(p=>p.classList.remove('active'));
-  el.classList.add('active');
-  state.duration=el.textContent;
-}
-
-function buildAndGenerate(){
-  const company = document.getElementById('companyInput').value.trim();
-  const userIdea = document.getElementById('promptInput').value.trim();
-  if(!userIdea){alert('Please describe your video idea first!');return}
-
-  // Build optimized prompt
-  let prompt = state.basePrompt;
-  if(company) prompt += `. Feature the brand name "${company}" prominently in the video`;
-  if(userIdea) prompt += `. Specific idea: ${userIdea}`;
-  prompt += `. Visual style: ${state.style}. Duration: ${state.duration}. High quality, professional output.`;
-
-  document.getElementById('promptPreview').textContent=prompt;
-  document.getElementById('finalPrompt').value=prompt;
-  document.getElementById('step2').style.display='none';
-  document.getElementById('step3').style.display='block';
-  document.getElementById('demoResult').textContent='';
-}
-
-function tryGenerate(){
-  const finalPrompt = document.getElementById('finalPrompt').value.trim();
-  if(!finalPrompt){alert('Prompt cannot be empty.');return}
-  const result = document.getElementById('demoResult');
-  result.textContent='⏳ Routing to best AI engine for your category...';
-  setTimeout(()=>{
-    result.innerHTML='✨ <strong style="color:#a78bfa">Perfect prompt!</strong> Your '+state.duration+' '+state.style.toLowerCase()+' video would be ready in ~30 seconds. Join the waitlist to generate real videos at launch!';
-  },1800);
+function tryDemo(){
+  const prompt=document.getElementById('promptInput').value.trim();
+  const btn=document.getElementById('demoBtn');
+  const result=document.getElementById('demoResult');
+  if(!prompt){alert('Please describe your video first!');return}
+  btn.disabled=true;btn.textContent='Generating...';
+  result.textContent='⏳ Analyzing your prompt...';
+  setTimeout(()=>{result.textContent='✨ Amazing! Your video would be ready in ~30 seconds. Join the waitlist to generate real videos at launch!';btn.disabled=false;btn.textContent='Generate ✨';},2000);
 }
 
 function scrollToWaitlist(){document.getElementById('waitlistSection').scrollIntoView({behavior:'smooth',block:'center'})}
 function toggleFaq(el){el.parentElement.classList.toggle('open')}
 
 document.getElementById('wlEmail').addEventListener('keydown',e=>{if(e.key==='Enter')joinWaitlist()});
+document.getElementById('promptInput').addEventListener('keydown',e=>{if(e.key==='Enter')tryDemo()});
 
 initCounter();
 </script>
